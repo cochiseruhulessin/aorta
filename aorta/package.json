@@ -4,6 +4,10 @@
   "author_email": "cochise.ruhulessin@unimatrixone.io",
   "url": "https://gitlab.com/unimatrixone",
   "licenses": "Proprietary",
+  "extras_require": {
+    "all": ["fastapi"],
+    "fastapi": ["fastapi"]
+  },
   "classifiers": [
      "Development Status :: 4 - Beta",
      "Environment :: Console",
