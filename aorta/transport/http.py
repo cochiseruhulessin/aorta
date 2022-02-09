@@ -13,6 +13,7 @@ from ..models.google import MessagePublished
 
 
 class MessageReceiver(webapi.Service):
+    """Receives messages from internal sources."""
 
     #: The list of parsers that parse incoming messages to a common format.
     parsers: typing.List[object] = [
@@ -26,11 +27,11 @@ class MessageReceiver(webapi.Service):
 
     async def command(self, request: fastapi.Request, dto: Envelope):
         """Issue a command for further processing."""
-        print(dto.get_message())
+        pass
 
     async def event(self, request: fastapi.Request, dto: Envelope):
         """Receive an event over HTTP."""
-        print(dto.get_message())
+        pass
 
     def setup_routes(self, path: str) -> None:
         self.add_api_route(
@@ -53,8 +54,11 @@ class MessageReceiver(webapi.Service):
         )
 
     def _update_signature(self, handler: typing.Callable):
-        async def f(*args, **kwargs):
-            return await handler(*args, **kwargs)
+        Envelope = typing.Union[tuple(self.parsers)]
+
+        async def f(dto: Envelope, *args, **kwargs):
+            print(dto.json())
+            return await handler(dto=dto, *args, **kwargs)
 
         sig = inspect.signature(handler)
         params = collections.OrderedDict(sig.parameters.items())
