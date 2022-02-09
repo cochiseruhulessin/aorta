@@ -13,4 +13,4 @@ class MessagePublished(pydantic.BaseModel):
     message: PubsubMessage
 
     def get_message(self) -> Message:
-        return Message(**self.message.get_data())
+        return Message(**(self.message.get_data() or {}))

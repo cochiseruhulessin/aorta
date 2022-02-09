@@ -2,23 +2,21 @@
 import typing
 
 from .models import Message
+from .node import Node
 
 
-class Handler:
+class Handler(Node):
     """Handles an incoming message using the :meth:`handle()` method."""
+    __module__: str = 'aorta'
 
-    #: A list of tuples specifying the api version and message type
-    #: that are accepted by this handler.
-    handles: typing.List[typing.Tuple[str, str]] = []
-
-    def can_handle(self, message: Message) -> bool:
-        """Return a boolean indicating if the :class:`Handler` knows
-        how to process `message`.
-        """
-        return (message.api_version, message.kind) in self.handles
+    def __init__(self):
+        self.logger.debug(
+            "Initializing message handler %s",
+            type(self).__name__
+        )
 
     async def handle(self, message: Message, *args, **kwargs):
-        """Invokes for each incoming message that matches the handlers'
+        """Invoked for each incoming message that matches the handlers'
         criteria.
         """
         raise NotImplementedError

@@ -5,8 +5,18 @@
   "url": "https://gitlab.com/unimatrixone",
   "licenses": "Proprietary",
   "extras_require": {
-    "all": ["fastapi", "unimatrix.ext.webapi"],
-    "fastapi": ["fastapi", "unimatrix.ext.webapi"]
+    "all": [
+      "fastapi",
+      "google-cloud-pubsub",
+      "unimatrix.ext.webapi"
+    ],
+    "google": [
+      "google-cloud-pubsub"
+    ],
+    "fastapi": [
+      "fastapi",
+      "unimatrix.ext.webapi"
+    ]
   },
   "classifiers": [
      "Development Status :: 4 - Beta",
