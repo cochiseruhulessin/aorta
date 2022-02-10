@@ -5,11 +5,11 @@ import uuid
 from unimatrix.lib import timezone
 
 from .models import Message
-from .models import MessageMetadata
+from .sender import Sender
 from .transport import ITransport
 
 
-class EventPublisher:
+class EventPublisher(Sender):
     """Provides an interface to published event messages."""
     __module__: str = 'aorta'
 
@@ -27,12 +27,7 @@ class EventPublisher:
         correlation_id: str = None
     ):
         """Publish an event to the upstream peer."""
-        metadata = {
-            'messageId': uuid.uuid4(),
-            'correlationId': correlation_id,
-            'published': timezone.now()
-        }
         if not isinstance(dto, Message):
             dto['type'] = "unimatrixone.io/event"
-            dto = Message(metadata=metadata, **dto)
-        await self._transport.send(dto)
+            dto = self.prepare(dto, correlation_id=correlation_id)
+        await self.send(dto)
