@@ -8,19 +8,25 @@ from aorta.transport.http import MessageReceiver
 
 
 app = MessageReceiver(allowed_hosts=['*'])
-
+publisher = aorta.EventPublisher(None)
 
 class OnMutation(aorta.EventListener):
 
     class Meta:
         handles = [
-            "picqer.com/v1/Mutation",
+            ('picqer.com/v1', 'Mutation')
         ]
 
 
 aorta.register(OnMutation)
 
-print(OnMutation.can_handle(message)
+message = publisher.prepare({
+    'apiVersion': "picqer.com/v1",
+    'kind': "Mutation",
+    'data': {'bar': "Foo"}
+})
+
+print(message.json())
 
 if __name__ == '__main__':
     uvicorn.run('__main__:app',
