@@ -8,7 +8,9 @@ class Message(pydantic.BaseModel):
     api_version: str = pydantic.Field(..., alias='apiVersion')
     kind: str = pydantic.Field(...)
     type: str = pydantic.Field(None)
-    metadata: MessageMetadata = pydantic.Field(...)
+    metadata: MessageMetadata = pydantic.Field(
+        default_factory=MessageMetadata
+    )
     data: dict = pydantic.Field({})
     spec: dict = pydantic.Field({})
 
