@@ -4,7 +4,6 @@ import typing
 try:
     from fastapi import Request
     from fastapi.dependencies.utils import get_dependant
-    from fastapi.dependencies.utils import get_parameterless_sub_dependant
     from fastapi.dependencies.utils import solve_dependencies
 except ImportError:
     Request = None

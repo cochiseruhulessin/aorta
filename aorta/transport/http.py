@@ -8,7 +8,6 @@ import fastapi
 from unimatrix.ext import webapi
 
 from ..models import Envelope
-from ..models import Message
 from ..models.google import MessagePublished
 
 

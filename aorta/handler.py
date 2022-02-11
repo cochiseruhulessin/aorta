@@ -1,7 +1,6 @@
 """Declares :class:`Handler`."""
 import asyncio
 import inspect
-import typing
 
 from .handlermetaclass import HandlerMetaclass
 from .models import Message
@@ -28,7 +27,7 @@ class Handler(Node, metaclass=HandlerMetaclass):
         # Check if the asyncio.iscoroutinefunction() call returns
         # True for this object, since it depends on a private
         # symbol.
-        assert asyncio.iscoroutinefunction(self)
+        assert asyncio.iscoroutinefunction(self) # nosec
         self.logger.debug(
             "Initializing message handler %s",
             type(self).__name__

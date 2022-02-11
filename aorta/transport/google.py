@@ -1,7 +1,6 @@
 """Declares :class:`GoogleTransport`."""
 import asyncio
 import functools
-import json
 import typing
 
 from google.cloud import pubsub_v1

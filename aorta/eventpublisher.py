@@ -1,12 +1,8 @@
 """Declares :class:`EventPublisher`."""
 import typing
-import uuid
-
-from unimatrix.lib import timezone
 
 from .models import Message
 from .sender import Sender
-from .transport import ITransport
 
 
 class EventPublisher(Sender):

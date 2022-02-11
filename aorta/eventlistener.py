@@ -1,8 +1,5 @@
 """Declares :class:`EventListener`."""
-import typing
-
 from .handler import Handler
-from .models import Message
 
 
 class EventListener(Handler):
