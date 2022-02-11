@@ -10,3 +10,4 @@ class EventListener(Handler):
     represent events.
     """
     __module__: str = 'aorta'
+    kind: str = 'EventListener'

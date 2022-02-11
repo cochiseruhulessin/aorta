@@ -1,11 +1,13 @@
 # pylint: skip-file
 import ioc
 
+from .commandissuer import CommandIssuer
 from .commandhandler import CommandHandler
 from .dispatcher import Dispatcher
 from .eventlistener import EventListener
 from .eventpublisher import EventPublisher
 from .handler import Handler
+from .handlersprovider import HandlersProvider
 from .runner import BaseRunner
 from .runner import FastAPIRunner
 from . import models
@@ -23,10 +25,12 @@ __all__ = [
     'EventPublisher',
     'FastAPIRunner',
     'Handler',
+    'HandlersProvider',
 ]
 
 
 _issuer = ioc.require('CommandIssuer')
+_provider = HandlersProvider()
 _publisher = ioc.require('EventPublisher')
 
 
@@ -48,5 +52,6 @@ async def publish(name: str, params: dict, version: str = 'v1') -> None:
     })
 
 
-def register(handler: Handler):
-    pass
+def register(*args, **kwargs):
+    return _provider.register(*args, **kwargs)
+register.__doc__ = _provider.register.__doc__
