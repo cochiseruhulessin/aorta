@@ -1,4 +1,5 @@
 # pylint: skip-file
+import asyncio
 import fastapi
 import pydantic
 import uvicorn
@@ -41,7 +42,7 @@ command = issuer.prepare({
     'spec': {}
 })
 
-print(aorta._provider.get(command))
+asyncio.run(aorta.run(aorta.runner.NullRunner(), command))
 
 if __name__ == '__main__':
     uvicorn.run('__main__:app',

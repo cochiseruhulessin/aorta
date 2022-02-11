@@ -1,4 +1,5 @@
 """Declares :class:`Handler`."""
+import asyncio
 import inspect
 import typing
 
@@ -10,6 +11,7 @@ from .node import Node
 class Handler(Node, metaclass=HandlerMetaclass):
     """Handles an incoming message using the :meth:`handle()` method."""
     __module__: str = 'aorta'
+    _is_coroutine = asyncio.coroutines._is_coroutine
 
     @property
     def __signature__(self):
@@ -23,6 +25,10 @@ class Handler(Node, metaclass=HandlerMetaclass):
         return (message.api_version, message.kind) in self._meta.handles
 
     def __init__(self):
+        # Check if the asyncio.iscoroutinefunction() call returns
+        # True for this object, since it depends on a private
+        # symbol.
+        assert asyncio.iscoroutinefunction(self)
         self.logger.debug(
             "Initializing message handler %s",
             type(self).__name__
@@ -34,6 +40,11 @@ class Handler(Node, metaclass=HandlerMetaclass):
         """
         raise NotImplementedError
 
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, type, exception, traceback) -> bool:
+        pass
+
     async def __call__(self, *args, **kwargs):
-        async with self:
-            await self.handle(*args, **kwargs)
+        await self.handle(*args, **kwargs)

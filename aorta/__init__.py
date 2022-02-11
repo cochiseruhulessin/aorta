@@ -1,4 +1,6 @@
 # pylint: skip-file
+import asyncio
+
 import ioc
 
 from .commandissuer import CommandIssuer
@@ -55,3 +57,12 @@ async def publish(name: str, params: dict, version: str = 'v1') -> None:
 def register(*args, **kwargs):
     return _provider.register(*args, **kwargs)
 register.__doc__ = _provider.register.__doc__
+
+
+async def run(runner: BaseRunner, message: models.Message):
+    """Run handlers for all `messages` using `runner`."""
+    futures = []
+    for handler_class in _provider.get(message):
+        async with handler_class() as handler:
+            futures.append(runner.run(handler))
+    await asyncio.gather(*futures)
