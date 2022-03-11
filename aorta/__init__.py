@@ -22,6 +22,7 @@ __all__ = [
     'transport',
     'BaseRunner',
     'CommandHandler',
+    'CommandIssuer',
     'Dispatcher',
     'EventListener',
     'EventPublisher',

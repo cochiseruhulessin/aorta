@@ -1,4 +1,5 @@
 """Declares :class:`CommandIssuer`."""
+import asyncio
 import typing
 
 from .models import Message
