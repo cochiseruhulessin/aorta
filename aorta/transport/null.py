@@ -18,5 +18,5 @@ class NullTransport(ITransport):
                 message.api_version,
                 message.kind,
                 message.metadata.id,
-                message.metadata.correlationId
+                message.metadata.correlation_id
             )
