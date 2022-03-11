@@ -1,5 +1,6 @@
 """Declares :class:`ITransport`."""
 import logging
+import typing
 
 from ..models import Message
 
