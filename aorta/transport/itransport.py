@@ -2,14 +2,14 @@
 import logging
 import typing
 
-from ..models import Message
+from ..models import MessageHeader
 
 
 class ITransport:
     """Declares the interface for all transport implementations."""
     logger: logging.Logger = logging.getLogger('uvicorn')
 
-    async def send(self, message: Message):
+    async def send(self, objects: typing.List[MessageHeader]):
         raise NotImplementedError
 
     async def publish(self, objects: typing.List[MessageHeader]):
