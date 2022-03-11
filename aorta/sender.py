@@ -9,6 +9,11 @@ from .transport import ITransport
 
 class Sender:
 
+    @property
+    def transport(self) -> ITransport:
+        """Return the transport used to publish message."""
+        return self._transport
+
     def __init__(self, transport: ITransport):
         self._transport = transport
 

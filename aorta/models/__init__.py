@@ -1,6 +1,7 @@
 # pylint: skip-file
 from . import google
 from .message import Message
+from .messageheader import MessageHeader
 from .messagemetadata import MessageMetadata
 
 

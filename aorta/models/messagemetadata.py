@@ -6,8 +6,8 @@ from unimatrix.lib import timezone
 
 
 class MessageMetadata(pydantic.BaseModel):
-    message_id: uuid.UUID = pydantic.Field(
-        alias='messageId',
+    id: uuid.UUID = pydantic.Field(
+        alias='id',
         default_factory=uuid.uuid4
     )
 
