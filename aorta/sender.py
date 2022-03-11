@@ -29,4 +29,4 @@ class Sender:
 
     async def send(self, message: Message):
         """Sends `message` to the upstream peer."""
-        return await self._transport.send(message)
+        return await self._transport.publish(message)
