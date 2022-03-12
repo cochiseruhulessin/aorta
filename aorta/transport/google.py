@@ -44,15 +44,16 @@ class GoogleTransport(ITransport):
         topics = [topics] if isinstance(topics, str) else topics
         return [self.client.topic_path(self.project, x) for x in topics]
 
-    async def send(self, message: Message):
-        futures = []
-        for topic in self.get_topics(message):
-            futures.append(self._send(topic, message))
-        await asyncio.gather(*futures)
+    async def send(self, objects: typing.List[Message]):
+        return await self._send([(self.get_topics(m), m) for m in objects])
 
-    def _send(self, topic, message):
-        self.logger.debug("Publishing to %s", topic)
-        buf = message.json(by_alias=True, exclude_defaults=True)
-        return asyncio.wrap_future(
-            self.client.publish(topic, str.encode(buf, 'utf-8'))
-        )
+    async def _send(self, objects: typing.List[typing.Tuple[str, Message]]):
+        futures = []
+        for topics, message in objects:
+            for topic in topics:
+                futures.append(
+                    asyncio.wrap_future(
+                        future=self.client.publish(topic, bytes(message))
+                    )
+                )
+        await asyncio.gather(*futures)
