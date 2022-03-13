@@ -40,7 +40,7 @@ class MessageMetaclass(type):
 
         # Create the envelope model with explicit typing for the message
         # spec or data.
-        attrs['_envelope'] = type(name, (MessageHeader,), {
+        attrs['_envelope'] = type(f'{name}', (MessageHeader,), {
             '__annotations__': {
                 cls.envelope_field: attrs['_model']
             }
@@ -49,6 +49,7 @@ class MessageMetaclass(type):
         # Inspect attrs to find out if there is an inner Meta class.
         attrs['_meta'] = MessageOptions(
             meta=attrs.pop('Meta', None),
+            name=name,
             type=cls.message_type,
             envelope_field=cls.envelope_field
         )

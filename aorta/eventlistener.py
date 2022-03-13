@@ -1,10 +1,11 @@
 """Declares :class:`EventListener`."""
-from .handler import Handler
+from .messagehandler import MessageHandler
 
 
-class EventListener(Handler):
-    """A :class:`Handler` implementation that processes messages that
-    represent events.
-    """
+class EventListener(MessageHandler):
+    """Handles event messages."""
     __module__: str = 'aorta'
-    kind: str = 'EventListener'
+
+    def get_parameters(self):
+        """Return the event data."""
+        return self._message.data
