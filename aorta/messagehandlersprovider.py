@@ -49,6 +49,11 @@ class MessageHandlersProvider:
 _default: MessageHandlersProvider = MessageHandlersProvider()
 
 
+def parse(data: dict):
+    """Parse a message using the default provider."""
+    return _default.parse(data)
+
+
 def register(spec: MessageHandlersProvider, cls: typing.Callable):
     """Register a message handle using the default provider."""
     return _default.register(spec, cls)
