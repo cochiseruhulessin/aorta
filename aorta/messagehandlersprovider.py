@@ -3,6 +3,7 @@ import collections
 import typing
 
 from .basemessage import BaseMessage
+from .exceptions import UnknownMessageType
 from .messagemetaclass import MessageMetaclass
 from .models import MessageHeader
 from .models import Message
@@ -11,7 +12,7 @@ from .models import Message
 class MessageHandlersProvider:
     """Implements a registry that can match handlers to messages."""
     __module__: str = 'aorta'
-    UnknownMessageType: type = type('UnknownMessageType', (Exception,), {})
+    UnknownMessageType: type = UnknownMessageType
 
     def __init__(self):
         self._handlers = collections.defaultdict(list)
@@ -43,3 +44,11 @@ class MessageHandlersProvider:
         self._handlers[key].append(cls)
         if key not in self._types:
             self._types[key] = spec._envelope
+
+
+_default: MessageHandlersProvider = MessageHandlersProvider()
+
+
+def register(spec: MessageHandlersProvider, cls: typing.Callable):
+    """Register a message handle using the default provider."""
+    return _default.register(spec, cls)
