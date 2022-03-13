@@ -17,6 +17,11 @@ class MessageHandler:
     logger: logging.Logger = logging.getLogger('uvicorn')
 
     @property
+    def params(self) - typing.Union[Command, Event]:
+        """Return the message parameters."""
+        return self.get_parameters()
+
+    @property
     def __signature__(self):
         return inspect.signature(self.handle)
 
