@@ -4,6 +4,7 @@ import typing
 import pydantic
 
 from .messagefielddescriptor import MessageFieldDescriptor
+from .messageobjectdescriptor import MessageObjectDescriptor
 from .messageoptions import MessageOptions
 from .models import MessageHeader
 
@@ -41,6 +42,7 @@ class MessageMetaclass(type):
         # Create the envelope model with explicit typing for the message
         # spec or data.
         attrs['_envelope'] = type(f'{name}', (MessageHeader,), {
+            '_params': MessageObjectDescriptor(cls.envelope_field),
             '__annotations__': {
                 cls.envelope_field: attrs['_model']
             }

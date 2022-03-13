@@ -17,9 +17,9 @@ class MessageHandler:
     logger: logging.Logger = logging.getLogger('uvicorn')
 
     @property
-    def params(self) - typing.Union[Command, Event]:
-        """Return the message parameters."""
-        return self.get_parameters()
+    def args(self) -> typing.Union[Command, Event]:
+        """Return the message arguments."""
+        return self._object
 
     @property
     def __signature__(self):
@@ -31,14 +31,11 @@ class MessageHandler:
     ):
         assert asyncio.iscoroutinefunction(self) # nosec
         self._message = message
+        self._object = message.get_object()
         self._publisher = publisher
 
     async def handle(self):
         """Handle the incoming message."""
-        raise NotImplementedError
-
-    def get_parameters(self):
-        """Return the parameters of the function to invoke."""
         raise NotImplementedError
 
     def issue(self, command: Command):

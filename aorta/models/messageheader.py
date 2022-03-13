@@ -25,8 +25,9 @@ class MessageHeader(pydantic.BaseModel):
         """Return a boolean indicating if the message is an event."""
         return self.type == "unimatrixone.io/event"
 
-    def log(self, logger) -> None:
-        print(f"Received {self.api_version}/{self.kind} (id: {self.metadata.id}, correlationId: {self.metadata.correlation_id})")
+    def get_object(self):
+        """Return the concrete object type for this message."""
+        return self._params
 
     def __bytes__(self) -> bytes:
         return str.encode(
