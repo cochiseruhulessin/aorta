@@ -58,8 +58,4 @@ class MessageHandler:
         except Exception as exception:
             must_suppress = await self.on_exception(exception)
             if not must_suppress:
-                self.logger.exception(
-                    "Caught fatal %s",
-                    type(exception).__name__
-                )
                 raise
