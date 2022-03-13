@@ -18,8 +18,11 @@ class MessageHandlersProvider:
         self._handlers = collections.defaultdict(list)
         self._types = {}
 
-    def get(self, message: typing.Union[MessageHeader, Message]) -> list:
+    def match(self, message: typing.Union[MessageHeader, Message]) -> list:
         """Return the list of handler classes for the given message."""
+        return self.get(message)
+
+    def get(self, message: typing.Union[MessageHeader, Message]) -> list:
         return self._handlers[message.api_version, message.kind]
 
     def parse(self, data: dict) -> Message:
@@ -47,6 +50,15 @@ class MessageHandlersProvider:
 
 
 _default: MessageHandlersProvider = MessageHandlersProvider()
+
+
+def match(
+    message: typing.Union[MessageHeader, Message]
+) -> typing.List[type]:
+    """Match a message against the registered handlers in the default
+    provider.
+    """
+    return _default.match(message)
 
 
 def parse(data: dict):
