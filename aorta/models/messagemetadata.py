@@ -1,4 +1,5 @@
 """Declares :class:`MessageMetadata`."""
+import typing
 import uuid
 
 import pydantic
@@ -19,6 +20,10 @@ class MessageMetadata(pydantic.BaseModel):
     published: int = pydantic.Field(
         default_factory=timezone.now
     )
+
+    delivery_count: int = pydantic.Field(0, alias='deliveryCount')
+
+    ttl: typing.Optional[int] = None
 
     annotations: dict = pydantic.Field({})
     labels: dict = pydantic.Field({})

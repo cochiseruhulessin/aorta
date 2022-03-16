@@ -27,12 +27,14 @@ class MessageHandler:
 
     def __init__(self,
         message: Message,
-        publisher: IPublisher = None
+        publisher: IPublisher = None,
+        logger: logging.Logger = None
     ):
         assert asyncio.iscoroutinefunction(self) # nosec
         self._message = message
         self._object = message.get_object()
         self._publisher = publisher
+        self.logger = logger or self.logger
 
     async def handle(self):
         """Handle the incoming message."""
