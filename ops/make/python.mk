@@ -61,9 +61,9 @@ endif
 cmd.twine = $(PYTHON) -m twine
 ifndef cmd.test.path
 ifeq ($(PROJECT_SCOPE), namespaced)
-cmd.runtests += $(shell find $(PYTHON_PKG_NAME)/ext/$(PYTHON_SUBPKG_NAME) | grep 'tests/test_$(TEST_STAGE)_.*\.py')
+cmd.runtests += $(shell find $(PYTHON_PKG_NAME)/ext/$(PYTHON_SUBPKG_NAME) | grep 'test_$(TEST_STAGE)_.*\.py$')
 else
-cmd.runtests += $(shell find $(PYTHON_PKG_NAME) | grep 'tests/test_$(TEST_STAGE)_.*\.py')
+cmd.runtests += $(shell find $(PYTHON_PKG_NAME) | grep 'test_$(TEST_STAGE)_.*\.py$')
 endif
 else
 cmd.runtests += $(cmd.test.path)

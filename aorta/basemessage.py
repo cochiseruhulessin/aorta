@@ -2,6 +2,7 @@
 import logging
 import uuid
 
+import pydantic
 from unimatrix.lib import timezone
 
 from .models import Message
@@ -11,6 +12,32 @@ from .messagemetaclass import MessageMetaclass
 class BaseMessage:
     """The base class for all message types."""
     __abstract__: bool = True
+
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, value):
+        if not isinstance(value, (dict, pydantic.BaseModel)):
+            raise TypeError(f"Invalid type {type(value).__name__}")
+        if isinstance(value, cls._envelope):
+            # In this case, the parameters are considered priorly validated.
+            result = value.get_object()
+        elif isinstance(value, cls._model):
+            # Also in the case that value is an instance of the message model,
+            # validation was already done.
+            result = value
+        elif isinstance(value, Message):
+            result = cls.validate(getattr(value, cls._meta.envelope_field))
+        elif isinstance(value, pydantic.BaseModel):
+            result = cls.validate(value.dict(by_alias=True))
+        elif isinstance(value, dict) \
+        and bool({'apiVersion', 'kind'} & set(dict.keys(value))):
+            result = cls.validate(cls._envelope(**value))
+        else:
+            result = cls._model(**value)
+        return result
 
     def __init__(self, **kwargs):
         self._params = self._model(**kwargs)
