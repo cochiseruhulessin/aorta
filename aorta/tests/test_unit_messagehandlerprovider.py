@@ -1,52 +1,74 @@
 # pylint: skip-file
 import pytest
 
+from ..exceptions import UnknownMessageType
 from ..messagehandlersprovider import MessageHandlersProvider
+from .conftest import FooCommand
+from .conftest import BarCommand
+from .conftest import BazCommand
+from .conftest import MultiCommandHandler
 from .conftest import TestCommand
+from .conftest import TestCommandHandler
 from .conftest import TestEvent
+from .conftest import TestEventListener
 
 
 class TestMessageHandlersProvider:
 
-    def test_parse_command(self, command):
-        data = command.as_message().dict(by_alias=True)
-        provider = MessageHandlersProvider()
-        provider.register(TestCommand, None)
-        message = provider.parse(data)
-        assert message.api_version == 'v1'
-        assert message.kind == 'TestCommand'
+    @pytest.fixture
+    def foo(self):
+        return FooCommand(foo=1)
 
-    def test_parse_event(self, event):
-        data = event.as_message().dict(by_alias=True)
-        provider = MessageHandlersProvider()
-        provider.register(TestEvent, None)
-        message = provider.parse(data)
-        assert message.api_version == 'v1'
-        assert message.kind == 'TestEvent'
+    @pytest.fixture
+    def bar(self):
+        return BarCommand(bar=2)
 
-    def test_invalid_raises_exception_on_parse(self, command):
-        provider = MessageHandlersProvider()
-        with pytest.raises(provider.UnknownMessageType):
-            provider.parse({})
+    @pytest.fixture
+    def baz(self):
+        return BazCommand(baz=3)
 
-    def test_unknown_raises_exception_on_parse(self, command):
-        provider = MessageHandlersProvider()
-        with pytest.raises(provider.UnknownMessageType):
-            provider.parse(command.as_message().dict(by_alias=True))
+    @pytest.fixture
+    def handler_class_multi(self):
+        return MultiCommandHandler
 
-    def test_register_single_command(self, command):
-        provider = MessageHandlersProvider()
-        provider.register(TestCommand, 'foo')
+    @pytest.fixture
+    def handler_class(self):
+        return TestCommandHandler
 
-        message = command.as_message()
-        handlers = provider.get(message)
-        assert handlers == ['foo']
+    @pytest.fixture
+    def message(self, command):
+        return command
 
-    def test_register_multiple_command(self, command):
-        provider = MessageHandlersProvider()
-        provider.register(TestCommand, 'foo')
-        provider.register(TestCommand, 'bar')
+    @pytest.fixture
+    def envelope(self, message):
+        return message.as_envelope().dict(by_alias=True)
 
-        message = command.as_message()
-        handlers = provider.get(message)
-        assert handlers == ['foo', 'bar']
+    def test_register_single(self, provider, handler_class):
+        provider.register(handler_class)
+
+    def test_register_multi(self, provider, handler_class_multi):
+        provider.register(handler_class_multi)
+
+    def test_match_single(self, provider, handler_class, message):
+        provider.register(handler_class)
+        assert handler_class in provider.match(message.as_envelope())
+
+    def test_match_multi(self, provider, handler_class_multi, foo, bar, baz):
+        provider.register(handler_class_multi)
+        assert handler_class_multi in provider.match(foo.as_envelope())
+        assert handler_class_multi in provider.match(bar.as_envelope())
+        assert handler_class_multi in provider.match(baz.as_envelope())
+
+    def test_parse_message_unregistered(self, provider, envelope):
+        with pytest.raises(UnknownMessageType):
+            provider.parse(envelope)
+
+    def test_parse_single(self, provider, envelope, handler_class):
+        provider.register(handler_class)
+        provider.parse(envelope)
+
+    def test_parse_multi(self, provider, handler_class_multi, foo, bar, baz):
+        provider.register(handler_class_multi)
+        provider.parse(foo.as_envelope().dict(by_alias=True))
+        provider.parse(bar.as_envelope().dict(by_alias=True))
+        provider.parse(baz.as_envelope().dict(by_alias=True))

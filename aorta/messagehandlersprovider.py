@@ -4,6 +4,7 @@ import typing
 
 from .basemessage import BaseMessage
 from .exceptions import UnknownMessageType
+from .messagehandlermetaclass import MessageHandlerMetaclass
 from .messagemetaclass import MessageMetaclass
 from .models import MessageHeader
 from .models import Message
@@ -39,14 +40,15 @@ class MessageHandlersProvider:
                 raise self.UnknownMessageType
             return self._types[key](**data)
 
-    def register(self, spec: MessageMetaclass, cls: type):
-        """Register handler class `cls` for the message of type
-        `spec`.
+    def register(self, handler: MessageHandlerMetaclass):
+        """Register handler class `handler` for the message types it
+        handles.
         """
-        key = (spec._meta.api_version, spec._meta.name)
-        self._handlers[key].append(cls)
-        if key not in self._types:
-            self._types[key] = spec._envelope
+        for spec in handler.handles:
+            key = (spec._meta.api_version, spec._meta.name)
+            self._handlers[key].append(handler)
+            if key not in self._types:
+                self._types[key] = spec._envelope
 
 
 _default: MessageHandlersProvider = MessageHandlersProvider()
@@ -66,6 +68,8 @@ def parse(data: dict):
     return _default.parse(data)
 
 
-def register(spec: MessageHandlersProvider, cls: typing.Callable):
-    """Register a message handle using the default provider."""
-    return _default.register(spec, cls)
+def register(handler: MessageHandlerMetaclass):
+    """Register handler class `handler` for the message types it
+    handles, using the default provider.
+    """
+    return _default.register(handler)

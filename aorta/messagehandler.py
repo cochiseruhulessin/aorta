@@ -7,12 +7,13 @@ import typing
 from .command import Command
 from .event import Event
 from .ipublisher import IPublisher
-from .models import Message
+from .models import Message as Envelope
 
 
 class MessageHandler:
     """The base class for all message handlers."""
     __module__: str = 'aorta'
+    __abstract__: bool = True
     _is_coroutine = asyncio.coroutines._is_coroutine
     logger: logging.Logger = logging.getLogger('uvicorn')
 
@@ -26,7 +27,7 @@ class MessageHandler:
         return inspect.signature(self.handle)
 
     def __init__(self,
-        message: Message,
+        message: Envelope,
         publisher: IPublisher = None,
         logger: logging.Logger = None
     ):

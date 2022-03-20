@@ -42,6 +42,9 @@ class BaseMessage:
     def __init__(self, **kwargs):
         self._params = self._model(**kwargs)
 
+    def as_envelope(self, *args, **kwargs) -> Message:
+        return self.as_message(*args, **kwargs)
+
     def as_message(self,
         correlation_id: str = None,
         ttl: int = None
