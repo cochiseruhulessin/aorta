@@ -1,12 +1,15 @@
 """Declares :class:`MessageHandlerMetaclass`."""
 import inspect
+import types
 import typing
 
 from unimatrix.exceptions import ImproperlyConfigured
 
+from .basemessage import BaseMessage
+
 
 class MessageHandlerMetaclass(type):
-    handles: type = None
+    handles: type[BaseMessage] = None
     parameter_name: str = None
 
     def __new__(cls, name:str, bases: tuple, attrs: dict) -> type:
@@ -38,7 +41,7 @@ class MessageHandlerMetaclass(type):
         # If the argument is a Union, then it accepts multiple message types.
         # Check if all definitions are of the required type.
         handles = [arg.annotation]
-        if typing.get_origin(arg.annotation) is typing.Union:
+        if typing.get_origin(arg.annotation) in (typing.Union, types.UnionType):
             handles = typing.get_args(arg.annotation)
         for Message in set(handles):
             if not issubclass(Message, cls.handles):
@@ -47,7 +50,7 @@ class MessageHandlerMetaclass(type):
                     "annotate itself with the message type that is handled by "
                     "this implementation."
                 )
-            new_class.handles.append(Message)
+            new_class.handles.append(Message) # type: ignore
 
         return new_class
 

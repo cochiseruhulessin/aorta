@@ -5,13 +5,19 @@ from .commandhandler import CommandHandler
 from .event import Event
 from .eventlistener import EventListener
 from .exceptions import *
+from .messagehandler import MessageHandler
 from .messagepublisher import MessagePublisher
+from .messagehandlersprovider import _default
 from .messagehandlersprovider import match
 from .messagehandlersprovider import parse
 from .messagehandlersprovider import register
 from .messagehandlersprovider import MessageHandlersProvider
 from . import models
 from . import transport
+
+
+def get_default_provider() -> MessageHandlersProvider:
+    return _default
 
 
 __all__ = [

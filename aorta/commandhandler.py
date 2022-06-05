@@ -1,5 +1,4 @@
 """Declares :class:`CommandHandler`."""
-from .command import Command
 from .commandhandlermetaclass import CommandHandlerMetaclass
 from .messagehandler import MessageHandler
 

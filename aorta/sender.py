@@ -27,6 +27,6 @@ class Sender:
         })
         return Message(**dto)
 
-    async def send(self, message: Message):
+    async def send(self, message: Message | list[Message]) -> None:
         """Sends `message` to the upstream peer."""
         return await self._transport.publish(message)
