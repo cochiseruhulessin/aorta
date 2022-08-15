@@ -1,6 +1,10 @@
 """Declares :class:`BaseMessage`."""
 import base64
 import uuid
+import inspect
+from typing import Any
+from typing import Awaitable
+from typing import Callable
 
 import pydantic
 from unimatrix.lib import timezone
@@ -14,6 +18,7 @@ class BaseMessage:
     __abstract__: bool = True
     _envelope: type[Message]
     _meta: MessageOptions
+    _model: type[pydantic.BaseModel]
 
     @classmethod
     def __get_validators__(cls):
@@ -41,10 +46,33 @@ class BaseMessage:
             result = cls._model(**value)
         return result
 
-    def __init__(self, **kwargs):
-        self._params = self._model(**kwargs)
+    @classmethod
+    def publish(
+        cls,
+        publisher: Callable[..., Any | Awaitable[Any]],
+        params: dict[str, Any]
+    ) -> Any:
+        """Publishes the message using the given callable `publisher`."""
+        message = cls(**params)
+        result = publisher(message)
+        return (
+            message
+            if not inspect.isawaitable(result)
+            else cls._send(result, message)
+        )
 
-    def as_envelope(self, *args, **kwargs) -> Message:
+    @staticmethod
+    async def _send(
+        result: Awaitable[Any],
+        message: 'BaseMessage'
+    ) -> Any:
+        await result
+        return message
+
+    def __init__(self, **kwargs: Any):
+        self._params = self._model.parse_obj(kwargs)
+
+    def as_envelope(self, *args: Any, **kwargs: Any) -> Message:
         return self.as_message(*args, **kwargs)
 
     def serialize(
