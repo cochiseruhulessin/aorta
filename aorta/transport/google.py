@@ -1,7 +1,7 @@
 """Declares :class:`GoogleTransport`."""
 import asyncio
-import functools
-import typing
+from typing import Any
+from typing import Callable
 
 from google.cloud import pubsub_v1
 
@@ -11,15 +11,11 @@ from .itransport import ITransport
 
 class GoogleTransport(ITransport):
     __module__ = 'aorta.transport'
-
-    @functools.cached_property
-    def client(self) -> pubsub_v1.PublisherClient:
-        """Return the client used to publish events."""
-        return pubsub_v1.PublisherClient()
+    client: pubsub_v1.PublisherClient
 
     def __init__(self,
         project: str,
-        topic_path: typing.Union[str, list, typing.Callable] = None
+        topic_path: str | list[str] | Callable[..., list[str]] | None = None
     ):
         """Initialize a new :class:`GoogleTransport`:
 
@@ -29,10 +25,11 @@ class GoogleTransport(ITransport):
                 returns a string or list of strings, that specify the topic
                 to which messages must be published.
         """
+        self.client = pubsub_v1.PublisherClient()
         self.project = project
         self.topic_path = topic_path
 
-    def get_topics(self, message: Message) -> typing.List[str]:
+    def get_topics(self, message: Message) -> list[str]:
         """Return the list of topics to which the given `message` must be
         published.
         """
@@ -44,16 +41,16 @@ class GoogleTransport(ITransport):
         topics = [topics] if isinstance(topics, str) else topics
         return [self.client.topic_path(self.project, x) for x in topics]
 
-    async def send(self, objects: typing.List[Message]):
+    async def send(self, objects: list[Message]):
         return await self._send([(self.get_topics(m), m) for m in objects])
 
-    async def _send(self, objects: typing.List[typing.Tuple[str, Message]]):
-        futures = []
+    async def _send(self, objects: list[tuple[str | list[str], Message]]):
+        futures: list[asyncio.Future[Any]] = []
         for topics, message in objects:
             for topic in topics:
                 futures.append(
                     asyncio.wrap_future(
-                        future=self.client.publish(topic, bytes(message))
+                        future=self.client.publish(topic, bytes(message)) # type: ignore
                     )
                 )
         await asyncio.gather(*futures)
