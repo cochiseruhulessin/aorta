@@ -17,6 +17,7 @@ import typing
 from typing import Any
 
 from .exceptions import UnknownMessageType
+from .handlers import PingHandler
 from .messagehandler import MessageHandler
 from .messagehandlermetaclass import MessageHandlerMetaclass
 from .models import MessageHeader
@@ -35,6 +36,7 @@ class MessageHandlersProvider:
     def __init__(self):
         self._handlers = collections.defaultdict(list)
         self._types = {}
+        self.register(PingHandler)
 
     def match(
         self,
