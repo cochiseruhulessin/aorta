@@ -1,5 +1,6 @@
 # pylint: skip-file
 from .command import Command
+from .command import Ping
 from .commandissuer import CommandIssuer
 from .commandhandler import CommandHandler
 from .event import Event
@@ -33,4 +34,5 @@ __all__ = [
     'EventListener',
     'MessageHandlersProvider',
     'MessagePublisher',
+    'Ping',
 ]

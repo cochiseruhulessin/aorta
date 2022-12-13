@@ -11,3 +11,7 @@ class CommandMetaclass(MessageMetaclass):
 class Command(BaseMessage, metaclass=CommandMetaclass):
     """The parameters for a :term:`Command`."""
     __abstract__: bool = True
+
+
+class Ping(Command):
+    """Indicates a ping to an application."""
