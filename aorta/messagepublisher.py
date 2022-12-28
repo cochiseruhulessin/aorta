@@ -21,7 +21,8 @@ class MessagePublisher(Sender):
     """Provides an interface to published event messages."""
     __module__: str = 'aorta'
 
-    async def publish(self,
+    async def publish(
+        self,
         objects: Command | Event | list[Command | Event],
         correlation_id: str | None = None
     ) -> None:
