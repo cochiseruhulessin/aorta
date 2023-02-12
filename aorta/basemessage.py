@@ -5,6 +5,7 @@ import inspect
 from typing import Any
 from typing import Awaitable
 from typing import Callable
+from typing import Generator
 
 import pydantic
 from unimatrix.lib import timezone
@@ -27,11 +28,13 @@ class BaseMessage:
         return cls._envelope, cls._model
 
     @classmethod
-    def __get_validators__(cls):
+    def __get_validators__(
+        cls
+    ) -> Generator[Callable[..., Any], None, None]:
         yield cls.validate
 
     @classmethod
-    def validate(cls, value):
+    def validate(cls, value: Any) -> Any:
         if not isinstance(value, (dict, pydantic.BaseModel)):
             raise TypeError(f"Invalid type {type(value).__name__}")
         if isinstance(value, cls._envelope):
