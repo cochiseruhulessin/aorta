@@ -1,4 +1,6 @@
 # pylint: skip-file
+import pydantic
+
 from .command import Command
 from .command import Ping
 from .commandhandler import CommandHandler
@@ -18,6 +20,15 @@ from . import transport
 
 def get_default_provider() -> MessageHandlersProvider:
     return _default
+
+
+def get_models(
+    cls: type[Command | Event]
+) -> tuple[type[pydantic.BaseModel], type[pydantic.BaseModel]]:
+    """Return the envelope and the specification model for a
+    class:`Command` or an :class:`Event` implementation.
+    """
+    return cls.get_models()
 
 
 __all__ = [

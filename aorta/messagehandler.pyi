@@ -5,6 +5,7 @@ from .event import Event
 
 
 class MessageHandler:
+    handles: list[type[Command] | type[Event]]
 
     @overload
     async def handle(self, command: Command) -> None:

@@ -21,6 +21,12 @@ class BaseMessage:
     _model: type[pydantic.BaseModel]
 
     @classmethod
+    def get_models(
+        cls
+    ) -> tuple[type[pydantic.BaseModel], type[pydantic.BaseModel]]:
+        return cls._envelope, cls._model
+
+    @classmethod
     def __get_validators__(cls):
         yield cls.validate
 
