@@ -52,16 +52,12 @@ def command():
 
 @pytest.fixture
 def command_handler(command):
-    return TestCommandHandler(
-        message=command.as_message()
-    )
+    return TestCommandHandler()
 
 
 @pytest.fixture
 def event_listener(event):
-    return TestEventListener(
-        message=event.as_message()
-    )
+    return TestEventListener()
 
 
 @pytest.fixture

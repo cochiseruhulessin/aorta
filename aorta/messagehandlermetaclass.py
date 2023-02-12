@@ -2,6 +2,7 @@
 import inspect
 import types
 import typing
+from typing import Any
 
 from unimatrix.exceptions import ImproperlyConfigured
 
@@ -53,4 +54,3 @@ class MessageHandlerMetaclass(type):
             new_class.handles.append(Message) # type: ignore
 
         return new_class
-
