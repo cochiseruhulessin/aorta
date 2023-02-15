@@ -25,5 +25,7 @@ class MessageMetadata(pydantic.BaseModel):
 
     ttl: typing.Optional[int] = None
 
+    attempts: int = 0
+
     annotations: dict = pydantic.Field({})
     labels: dict = pydantic.Field({})
