@@ -1,6 +1,9 @@
 """Declares :class:`Command`."""
+from typing import NoReturn
+
 from .basemessage import BaseMessage
 from .messagemetaclass import MessageMetaclass
+from .types import RetryCommand
 
 
 class CommandMetaclass(MessageMetaclass):
@@ -11,6 +14,10 @@ class CommandMetaclass(MessageMetaclass):
 class Command(BaseMessage, metaclass=CommandMetaclass):
     """The parameters for a :term:`Command`."""
     __abstract__: bool = True
+
+    def retry(self) -> NoReturn:
+        """Indicates to the runner that the command must be retried."""
+        raise RetryCommand
 
 
 class Ping(Command):
