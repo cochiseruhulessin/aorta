@@ -2,6 +2,7 @@
 omit =
   **/__init__.py
   **/tests/*
+  **/test/*
   **/conftest.py
   */infra/orm/*
 

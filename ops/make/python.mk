@@ -43,6 +43,7 @@ cmd.runtests = $(PYTHON) -m pytest -v
 cmd.runtests += --cov-report term-missing:skip-covered
 cmd.runtests += --cov=$(or $(cmd.test.cover-package), $(PYTHON_PKG_NAME))
 cmd.runtests += --cov-append
+cmd.runtests += --no-cov-on-fail
 ifdef test.coverage.$(TEST_STAGE)
 cmd.runtests += --cov-fail-under=$(test.coverage.$(TEST_STAGE))
 endif
@@ -61,12 +62,12 @@ endif
 cmd.twine = $(PYTHON) -m twine
 ifndef cmd.test.path
 ifeq ($(PROJECT_SCOPE), namespaced)
-cmd.runtests += $(shell find $(PYTHON_PKG_NAME)/ext/$(PYTHON_SUBPKG_NAME) | grep 'test_$(TEST_STAGE)_.*\.py$')
+cmd.runtests += $(shell find $(CURDIR)/tests | grep test_$(TEST_STAGE)_.*\.py$$)
 else
-cmd.runtests += $(shell find $(PYTHON_PKG_NAME) | grep 'test_$(TEST_STAGE)_.*\.py$')
+cmd.runtests += $(shell find $(CURDIR)/tests | grep test_$(TEST_STAGE)_.*\.py$$)
 endif
 else
-cmd.runtests += $(cmd.test.path)
+cmd.runtests += $(shell find $(CURDIR)/$(cmd.test.path) | grep test_$(TEST_STAGE)_.*\.py$$)
 endif
 cmd.watch ?= fswatch -o $(PYTHON_PKG_NAME) | xargs -n1 -I{} $(MAKE) test-unit
 docker.build.args += --build-arg HTTP_WSGI_MODULE="$(HTTP_WSGI_MODULE)"

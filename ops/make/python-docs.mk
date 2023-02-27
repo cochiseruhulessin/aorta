@@ -36,14 +36,14 @@ $(PYTHON_DOCS_DIR)/requirements.txt: $(PYTHON_DOCS_DIR) $(PYTHON_DOCS_LIBS)
 	@$(cmd.git.add) $(PYTHON_DOCS_DIR)/requirements.txt
 
 
-$(PYTHON_DOCS_DIR)/build/html: $(PYTHON_DOCS_DIR)
-	@cd $(PYTHON_DOCS_DIR) && $(MAKE) html
+$(PYTHON_DOCS_DIR)/build/dirhtml: $(PYTHON_DOCS_DIR)
+	@cd $(PYTHON_DOCS_DIR) && $(MAKE) dirhtml
 
 
 build-python-docs:
-	@$(MAKE) -C $(PYTHON_DOCS_DIR) html
+	@$(MAKE) -C $(PYTHON_DOCS_DIR) dirhtml
 	@mkdir -p $(HTML_DOCUMENT_ROOT)
-	@cp -R $(PYTHON_DOCS_DIR)/build/html/* $(HTML_DOCUMENT_ROOT)/
+	@cp -R $(PYTHON_DOCS_DIR)/build/dirhtml/* $(HTML_DOCUMENT_ROOT)/
 
 
 bootstrap-python-docs: $(PYTHON_DOCS_DIR)/Makefile
