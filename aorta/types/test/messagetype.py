@@ -23,12 +23,14 @@ __all__: list[str] = [
     'test_is_valid',
     'test_not_is_valid',
     'test_serialize',
+    'test_parse_header',
     'test_parse_unknown',
     'test_parse_known',
     'test_parse_valid_unknown',
     'test_global_parse_unknown',
     'test_global_parse_known',
     'test_global_parse_valid_unknown',
+    'test_message',
 ]
 
 
@@ -61,6 +63,13 @@ def test_not_is_valid(message: aorta.types.Publishable):
     assert not envelope.is_valid()
 
 
+def test_message(
+    message: aorta.types.Publishable
+):
+    envelope = message.envelope()
+    assert envelope.message == message
+
+
 def test_qualname(message: aorta.types.Publishable):
     envelope = message.envelope()
     version, kind = envelope.qualname
@@ -80,6 +89,13 @@ def test_typecheck(
     typecheck: Callable[[aorta.types.MessageHeader], bool]
 ):
     assert typecheck(message.envelope())
+
+
+def test_parse_header(
+    message: aorta.types.Publishable
+):
+    envelope = message.envelope()
+    assert envelope.metadata.uid == envelope.header.metadata.uid
 
 
 def test_parse_unknown(

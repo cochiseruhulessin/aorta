@@ -11,16 +11,16 @@ from typing import Any
 import pydantic
 import pydantic.main
 
-from .envelope import Envelope
+from .eventenvelope import EventEnvelope
 from .messageheader import MessageHeader
 
 
 class EventType(pydantic.main.ModelMetaclass):
-    __registry__: dict[tuple[str, str], type[Envelope[Any]]] = {}
+    __registry__: dict[tuple[str, str], type[EventEnvelope[Any]]] = {}
     typename: str = 'unimatrixone.io/event'
 
     @staticmethod
-    def parse(data: Any) -> Envelope[Any] | MessageHeader | None:
+    def parse(data: Any) -> EventEnvelope[Any] | MessageHeader | None:
         header = None
         try:
             header = MessageHeader.parse_obj(data)
@@ -45,7 +45,7 @@ class EventType(pydantic.main.ModelMetaclass):
                 raise TypeError('Message {0}/{1} is already registered.'.format(*k))
             new_class.__envelope__ = type(
                 f'{name}Envelope',
-                (Envelope,), # type: ignore
+                (EventEnvelope,), # type: ignore
                 {
                     '__annotations__': {
                         'data': new_class
