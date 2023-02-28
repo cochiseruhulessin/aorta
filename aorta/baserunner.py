@@ -52,14 +52,14 @@ class BaseRunner:
         for handler_class in self.get_handlers(envelope):
             if not self.must_run(envelope, handler_class):
                 continue
-            self.logger.debug(
-                "Running handler %s for bound envelope (id: %s)",
-                handler_class.__name__, envelope.metadata.uid
-            )
             tx = Transaction(self.publisher)
             handler = handler_class(
                 publisher=tx,
                 metadata=envelope.metadata
+            )
+            self.logger.debug(
+                "Running handler %s for unbound envelope (id: %s)",
+                handler_class.__name__, envelope.metadata.uid
             )
             futures.append(self.run_handler(tx, handler, envelope)) # type: ignore
     
@@ -106,9 +106,13 @@ class BaseRunner:
     ) -> tuple[Envelope[Any] | None, bool, Any]:
         try:
             success, result = await self.handle(transaction, handler, envelope) # type: ignore
-        except Exception:
+        except Exception as e:
             result = NotImplemented
             success = False
+            self.logger.debug(
+                "Caught fatal %s during %s.handle()",
+                type(e).__name__, type(handler).__name__
+            )
         return envelope.clone(type(handler)) if not success else None, success, result 
     
     async def handle(
