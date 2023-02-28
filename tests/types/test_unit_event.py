@@ -31,4 +31,4 @@ def typecheck() -> Callable[[aorta.types.MessageHeader], bool]:
 
 @pytest.fixture # type: ignore
 def parse() -> Callable[[Any], aorta.types.Envelope[Any] | None]:
-    return aorta.types.EventType.parse
+    return aorta.types.EventType.parse # type: ignore

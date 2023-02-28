@@ -25,6 +25,10 @@ __all__: list[str] = [
     'test_serialize',
     'test_parse_unknown',
     'test_parse_known',
+    'test_parse_valid_unknown',
+    'test_global_parse_unknown',
+    'test_global_parse_known',
+    'test_global_parse_valid_unknown',
 ]
 
 
@@ -94,3 +98,41 @@ def test_parse_known(
     e2 = parse(e1.dict())
     assert e2 is not None
     assert e1.metadata.uid == e2.metadata.uid
+
+
+def test_parse_valid_unknown(
+    message: aorta.types.Publishable,
+    parse: Callable[[Any], aorta.types.Envelope[Any] | None]
+):
+    cls = type(type(message))
+    e2 = parse({'apiVersion': 'v1', 'kind': 'Unknown', 'type': cls.typename})
+    assert e2 is not None
+    assert type(e2) == aorta.types.MessageHeader
+    assert e2.kind == 'Unknown', e2.kind
+    assert e2.api_version == 'v1', e2.api_version
+
+
+def test_global_parse_unknown():
+    assert aorta.parse({'apiVersion': 'v1', 'kind': 'Unknown'}) is None
+    assert aorta.parse([]) is None
+    assert aorta.parse(None) is None
+
+
+def test_global_parse_known(
+    message: aorta.types.Publishable,
+):
+    e1 = message.envelope()
+    e2 = aorta.parse(e1.dict())
+    assert e2 is not None
+    assert e1.metadata.uid == e2.metadata.uid
+
+
+def test_global_parse_valid_unknown(
+    message: aorta.types.Publishable,
+):
+    cls = type(type(message))
+    e2 = aorta.parse({'apiVersion': 'v1', 'kind': 'Unknown', 'type': cls.typename})
+    assert e2 is not None
+    assert type(e2) == aorta.types.MessageHeader
+    assert e2.kind == 'Unknown', e2.kind
+    assert e2.api_version == 'v1', e2.api_version

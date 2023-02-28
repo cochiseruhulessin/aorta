@@ -20,13 +20,14 @@ class EventType(pydantic.main.ModelMetaclass):
     typename: str = 'unimatrixone.io/event'
 
     @staticmethod
-    def parse(data: Any) -> Envelope[Any] | None:
+    def parse(data: Any) -> Envelope[Any] | MessageHeader | None:
+        header = None
         try:
             header = MessageHeader.parse_obj(data)
             if header.type == EventType.typename:
                 return EventType.__registry__[(header.api_version, header.kind)].parse_obj(data)
         except (pydantic.ValidationError, KeyError, TypeError, ValueError):
-            return None
+            return header
 
     def __new__(
         cls,
