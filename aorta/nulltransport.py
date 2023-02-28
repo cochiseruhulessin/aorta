@@ -22,5 +22,9 @@ class NullTransport:
     def sent(self) -> list[Envelope[Any]]:
         return list(self._sent)
 
-    async def send(self, messages: list[Envelope[Any]]) -> None:
+    async def send(
+        self,
+        messages: list[Envelope[Any]],
+        is_retry: bool = False
+    ) -> None:
         self._sent.extend(messages)

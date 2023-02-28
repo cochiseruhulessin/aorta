@@ -32,5 +32,5 @@ class MessagePublisher:
     def begin(self) -> ITransaction:
         return self.transaction_factory(self)
     
-    async def send(self, messages: list[Envelope[Any]]) -> None:
-        return await self.transport.send(messages)
+    async def send(self, messages: list[Envelope[Any]], is_retry: bool = False) -> None:
+        return await self.transport.send(messages, is_retry=is_retry)

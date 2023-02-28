@@ -6,6 +6,8 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+from unittest.mock import AsyncMock
+
 import pytest
 
 import aorta
@@ -14,7 +16,11 @@ import aorta
 __all__: list[str] = [
     'test_handle_success',
     'test_issue_command',
+    'test_run',
+    'test_run_exception_on_bound_envelope',
+    'test_run_exception_on_unbound_envelope',
     'test_publish_event',
+    'test_get_handlers',
 ]
 
 
@@ -29,7 +35,48 @@ async def test_handle_success(
         metadata=envelope.metadata,
         publisher=transaction
     )
-    assert await handler.handle(envelope.message) == 'foo'
+    assert await handler.handle(envelope.message) == 'foo' # type: ignore
+
+
+def test_get_handlers(message: aorta.types.Publishable):
+    envelope = message.envelope()
+    handlers = aorta.get(envelope)
+    assert len(handlers) == 1
+
+
+@pytest.mark.asyncio
+async def test_run(
+    message: aorta.types.Publishable,
+    runner: aorta.types.IRunner
+):
+    envelope = message.envelope()
+    assert await runner.run(envelope)
+
+
+@pytest.mark.asyncio
+async def test_run_exception_on_unbound_envelope(
+    message: aorta.types.Publishable,
+    runner: aorta.BaseRunner,
+    transport: aorta.NullTransport
+):
+    envelope = message.envelope()
+    runner.handle = AsyncMock(side_effect=Exception)
+    assert await runner.run(envelope)
+    assert len(transport.sent) == 1
+    assert transport.sent[0].metadata.uid == envelope.metadata.uid
+    assert transport.sent[0].is_bound()
+
+
+@pytest.mark.asyncio
+async def test_run_exception_on_bound_envelope(
+    message: aorta.types.Publishable,
+    runner: aorta.BaseRunner,
+    transport: aorta.NullTransport
+):
+    envelope = message.envelope()
+    runner.handle = AsyncMock(side_effect=Exception)
+    assert await runner.run(envelope)
+    assert not await runner.run(transport.sent[0])
 
 
 @pytest.mark.asyncio

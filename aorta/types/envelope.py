@@ -12,7 +12,8 @@ from typing import TypeVar
 
 from .messageheader import MessageHeader
 
-T = TypeVar('T')
+
+T = TypeVar('T', bound='Envelope[Any]')
 
 
 class Envelope(MessageHeader, Generic[T]):
@@ -25,9 +26,24 @@ class Envelope(MessageHeader, Generic[T]):
     def message(self) -> T:
         return self.get_message()
 
+    def clone(self: T, handler_class: type[Any]) -> T:
+        envelope = self.parse_obj(self.dict())
+        envelope.metadata.handler = f'{handler_class.__module__}.{handler_class.__name__}'
+        return envelope
+
     def dict(self, *args: Any, **kwargs: Any) -> Any:
         kwargs.setdefault('by_alias', True)
         return super().dict(*args, **kwargs)
     
     def get_message(self) -> T:
         raise NotImplementedError
+    
+    def is_bound(self) -> bool:
+        return self.metadata.handler is not None
+
+    def is_known(self) -> bool:
+        """Return a boolean if the enclosed message is known."""
+        return True
+
+    def wants(self, handler_class: type[Any]) -> bool:
+        return self.metadata.handler == f'{handler_class.__module__}.{handler_class.__name__}'

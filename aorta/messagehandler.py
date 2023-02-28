@@ -7,8 +7,10 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import logging
+from typing import Any
 
 from .types import Command
+from .types import Envelope
 from .types import Event
 from .types import ITransaction
 from .types import MessageMetadata
@@ -38,13 +40,23 @@ class MessageHandler:
         assert self.metadata.correlation_id is not None
         self.publisher.publish(command, correlation_id=self.metadata.correlation_id)
 
-    async def on_exception(self, exception: Exception) -> bool:
-        """Hook to perform cleanup after a fatal exception. Return a boolean
-        indicating if the exception may be suppressed.
+    async def on_exception(self, exception: Exception) -> None:
+        """Hook to perform cleanup after a fatal exception.
         """
-        return False
+        pass
 
     def publish(self, event: Event):
         """Publish an event using the default event publisher."""
         assert self.metadata.correlation_id is not None
         self.publisher.publish(event, correlation_id=self.metadata.correlation_id)
+
+    async def run(self, envelope: Envelope[Any]) -> tuple[bool, Any]:
+        result: Any = NotImplemented
+        success = False
+        try:
+            result = await self.handle(envelope.message.parse_obj(envelope.message)) # type: ignore
+            success = True
+        except Exception as e: # pragma: no cover
+            await self.on_exception(e)
+            self.logger.exception('Caught fatal %s', type(e).__name__)
+        return success, result

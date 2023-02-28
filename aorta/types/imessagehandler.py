@@ -17,6 +17,10 @@ from .messagemetadata import MessageMetadata
 class IMessageHandler:
     __module__: str = 'aorta.types'
 
+    @property
+    def qualname(self) -> str:
+        ...
+
     def __init__(
         self,
         publisher: ITransaction,
@@ -26,4 +30,4 @@ class IMessageHandler:
 
     def issue(self, command: Command) -> None: ...
     def publish(self, event: Event) -> None: ...
-    async def handle(self, *args: Any) -> Any: ...
+    async def run(self, message: Any) -> tuple[bool, Any]: ...

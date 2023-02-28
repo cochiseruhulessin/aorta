@@ -18,6 +18,7 @@ from .imessagehandler import IMessageHandler
 from .ipublisher import IPublisher
 from .itransaction import ITransaction
 from .itransport import ITransport
+from .irunner import IRunner
 from .message import Message
 from .messagehandlertype import MessageHandlerType
 from .messageheader import MessageHeader
@@ -31,8 +32,9 @@ __all__: list[str] = [
     'Envelope',
     'Event',
     'EventType',
-    'IPublisher',
     'IMessageHandler',
+    'IPublisher',
+    'IRunner',
     'ITransaction',
     'ITransport',
     'Message',

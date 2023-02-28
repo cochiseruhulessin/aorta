@@ -6,17 +6,13 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-from typing import Any
-from typing import Protocol
+import pytest
 
-from .envelope import Envelope
+import aorta
+from aorta.types.test.transport import *
+from ...conftest import FooEvent
 
 
-class ITransport(Protocol):
-    __module__: str = 'aorta.types'
-
-    async def send(
-        self,
-        messages: list[Envelope[Any]],
-        is_retry: bool = False
-    ): ...
+@pytest.fixture
+def message() -> aorta.types.Publishable:
+    return FooEvent(foo=1)

@@ -22,6 +22,13 @@ def publisher(
 
 
 @pytest.fixture
+def runner(
+    publisher: aorta.types.IPublisher
+) -> aorta.types.IRunner:
+    return aorta.LocalRunner(publisher) # type: ignore
+
+
+@pytest.fixture
 def transport() -> aorta.types.ITransport:
     return aorta.NullTransport()
 
@@ -74,3 +81,6 @@ class FooListener(aorta.EventListener):
     async def handle(self, event: FooEvent):
         return 'foo'
 
+
+aorta.register(FooHandler)
+aorta.register(FooListener)

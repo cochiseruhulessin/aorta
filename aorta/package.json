@@ -4,6 +4,16 @@
   "author_email": "cochise.ruhulessin@unimatrixone.io",
   "url": "https://gitlab.com/unimatrixone",
   "licenses": "Proprietary",
+  "extras_require": {
+    "all": [
+      "google-api-core",
+      "google-cloud-pubsub"
+    ],
+    "google": [
+      "google-api-core",
+      "google-cloud-pubsub"
+    ]
+  },
   "classifiers": [
      "Development Status :: 4 - Beta",
      "Environment :: Console",

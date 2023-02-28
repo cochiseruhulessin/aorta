@@ -21,4 +21,5 @@ class IPublisher(Protocol):
     async def send(
         self,
         messages: list[Envelope[Any]],
+        is_retry: bool = False
     ): ...

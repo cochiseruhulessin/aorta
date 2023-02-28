@@ -10,8 +10,12 @@ import uuid
 from datetime import datetime
 from datetime import timezone
 from typing import Any
+from typing import TypeVar
 
 import pydantic
+
+
+T = TypeVar('T', bound='MessageMetadata')
 
 
 class MessageMetadata(pydantic.BaseModel):
@@ -36,6 +40,8 @@ class MessageMetadata(pydantic.BaseModel):
     ttl: int | None = None
 
     attempts: int = 0
+
+    handler: str | None = None
 
     annotations: dict[str, Any] = pydantic.Field(default={})
     labels: dict[str, Any] = pydantic.Field(default={})
@@ -65,6 +71,6 @@ class MessageMetadata(pydantic.BaseModel):
             value = str(value)
         uuid.UUID(value)
         return value
-    
+
     class Config:
         allow_population_by_field_name: bool = True

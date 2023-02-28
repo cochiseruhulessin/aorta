@@ -6,17 +6,9 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-from typing import Any
-from typing import Protocol
-
-from .envelope import Envelope
+from .pubsubtransport import PubsubTransport
 
 
-class ITransport(Protocol):
-    __module__: str = 'aorta.types'
-
-    async def send(
-        self,
-        messages: list[Envelope[Any]],
-        is_retry: bool = False
-    ): ...
+__all__: list[str] = [
+    'PubsubTransport'
+]

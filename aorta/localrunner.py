@@ -6,17 +6,18 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-from typing import Any
-from typing import Protocol
+from .baserunner import BaseRunner
 
-from .envelope import Envelope
+from .provider import Provider
+from .types import IPublisher
 
 
-class ITransport(Protocol):
-    __module__: str = 'aorta.types'
+class LocalRunner(BaseRunner):
+    __module__: str = 'aorta'
+    provider: type[Provider] = Provider
 
-    async def send(
+    def __init__(
         self,
-        messages: list[Envelope[Any]],
-        is_retry: bool = False
-    ): ...
+        publisher: IPublisher
+    ):
+        self.publisher = publisher

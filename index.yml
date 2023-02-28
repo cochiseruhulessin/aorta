@@ -1,0 +1,16 @@
+indexes:
+# Used for display
+- kind: AortaMessage
+  properties:
+  - name: type
+    direction: asc
+  - name: metadata.published
+    direction: desc
+
+# Used for replaying messages
+- kind: AortaMessage
+  properties:
+  - name: kind
+    direction: asc
+  - name: metadata.published
+    direction: asc
