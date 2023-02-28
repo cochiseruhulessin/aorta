@@ -77,6 +77,11 @@ class BaseRunner:
             if envelope and not success:
                 retry.append(envelope)
 
+        for envelope in retry:
+            self.logger.critical(
+                "Retrying failed message %s/%s (id: %s)",
+                envelope.api_version, envelope.kind, envelope.metadata.uid
+            )
         await self.publisher.send(retry, is_retry=True)
         return True
 
