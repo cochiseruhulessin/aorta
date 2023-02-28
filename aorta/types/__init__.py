@@ -6,19 +6,43 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+from typing import TypeAlias
+from typing import Union
+
+from .command import Command
+from .commandtype import CommandType
 from .envelope import Envelope
 from .event import Event
 from .eventtype import EventType
+from .imessagehandler import IMessageHandler
+from .ipublisher import IPublisher
+from .itransaction import ITransaction
+from .itransport import ITransport
+from .message import Message
+from .messagehandlertype import MessageHandlerType
 from .messageheader import MessageHeader
 from .messagemetadata import MessageMetadata
 from .publishable import Publishable
 
 
 __all__: list[str] = [
+    'Command',
+    'CommandType',
     'Envelope',
     'Event',
     'EventType',
+    'IPublisher',
+    'IMessageHandler',
+    'ITransaction',
+    'ITransport',
+    'Message',
+    'MessageHandlerType',
     'MessageHeader',
     'MessageMetadata',
     'Publishable',
+]
+
+MessageType: TypeAlias = Union[
+    Command,
+    Event
 ]

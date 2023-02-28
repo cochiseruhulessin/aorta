@@ -24,7 +24,7 @@ class MessageMetadata(pydantic.BaseModel):
 
     correlation_id: str = pydantic.Field(
         alias='correlationId',
-        default_factory=lambda: str(uuid.uuid4)
+        default_factory=lambda: str(uuid.uuid4())
     )
 
     published: datetime = pydantic.Field(
@@ -65,3 +65,6 @@ class MessageMetadata(pydantic.BaseModel):
             value = str(value)
         uuid.UUID(value)
         return value
+    
+    class Config:
+        allow_population_by_field_name: bool = True

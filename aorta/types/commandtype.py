@@ -11,24 +11,24 @@ from typing import Any
 import pydantic
 import pydantic.main
 
-from .eventenvelope import EventEnvelope
+from .commandenvelope import CommandEnvelope
 from .messageheader import MessageHeader
 from .messagetype import MessageType
 
 
-class EventType(MessageType):
+class CommandType(MessageType):
     __module__: str = 'aorta.types'
-    __registry__: dict[tuple[str, str], type[EventEnvelope[Any]]] = {}
-    envelope_attr: str = 'data'
-    envelope_class: type[EventEnvelope[Any]] = EventEnvelope
-    typename: str = 'unimatrixone.io/event'
+    __registry__: dict[tuple[str, str], type[CommandEnvelope[Any]]] = {}
+    envelope_attr: str = 'spec'
+    envelope_class: type[CommandEnvelope[Any]] = CommandEnvelope
+    typename: str = 'unimatrixone.io/command'
 
     @staticmethod
-    def parse(data: Any) -> EventEnvelope[Any] | MessageHeader | None:
+    def parse(data: Any) -> CommandEnvelope[Any] | MessageHeader | None:
         header = None
         try:
             header = MessageHeader.parse_obj(data)
-            if header.type == EventType.typename:
-                return EventType.__registry__[(header.api_version, header.kind)].parse_obj(data)
+            if header.type == CommandType.typename:
+                return CommandType.__registry__[(header.api_version, header.kind)].parse_obj(data)
         except (pydantic.ValidationError, KeyError, TypeError, ValueError):
             return header

@@ -15,24 +15,24 @@ import aorta
 from aorta.types.test.messagetype import *
 from aorta.types.test.messagehandler import *
 from aorta.types.test.transaction import *
-from ..conftest import FooEvent
+from ..conftest import FooCommand
 
 
 @pytest.fixture # type: ignore
 def typecheck() -> Callable[[aorta.types.MessageHeader], bool]:
-    return aorta.types.MessageHeader.is_event
+    return aorta.types.MessageHeader.is_command
 
 
 @pytest.fixture # type: ignore
 def parse() -> Callable[[Any], aorta.types.Envelope[Any] | None]:
-    return aorta.types.EventType.parse # type: ignore
+    return aorta.types.CommandType.parse # type: ignore
 
 
 @pytest.fixture # type: ignore
-def MessageHandler(EventListener: type[aorta.MessageHandler]) -> type[aorta.MessageHandler]:
-    return EventListener
+def MessageHandler(CommandHandler: type[aorta.MessageHandler]) -> type[aorta.MessageHandler]:
+    return CommandHandler
 
 
 @pytest.fixture
 def message() -> aorta.types.Publishable:
-    return FooEvent(foo=1)
+    return FooCommand(foo=1)

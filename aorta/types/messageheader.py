@@ -41,9 +41,9 @@ class MessageHeader(pydantic.BaseModel):
         """
         self.metadata.delivery_count += 1
 
-    #def is_command(self) -> bool:
-    #    """Return a boolean indicating if the message is a command."""
-    #    return self.type == "unimatrixone.io/command"
+    def is_command(self) -> bool:
+        """Return a boolean indicating if the message is a command."""
+        return self.type == "unimatrixone.io/command"
 
     def is_event(self) -> bool:
         """Return a boolean indicating if the message is an event."""

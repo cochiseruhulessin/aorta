@@ -5,6 +5,11 @@ omit =
   **/test/*
   **/conftest.py
   */infra/orm/*
+  */types/i*
+  aorta/types/messagehandlertype.py
+  aorta/types/commandtype.py
+  aorta/types/messagetype.py
+  aorta/types/eventtype.py
 
 exclude_lines =
   # Have to re-enable the standard pragma
