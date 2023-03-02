@@ -21,7 +21,7 @@ class MessageHandler:
     __module__: str = 'aorta'
     __abstract__: bool = True
     handles: list[type[Command] | type[Event]]
-    logger: logging.Logger = logging.getLogger('uvicorn')
+    logger: logging.Logger = logging.getLogger('aorta')
     metadata: MessageMetadata
     publisher: ITransaction
 
