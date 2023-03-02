@@ -15,6 +15,7 @@ from .localrunner import LocalRunner
 from .messagehandler import MessageHandler
 from .messagepublisher import MessagePublisher
 from .nulltransport import NullTransport
+from .ping import PingHandler
 from .provider import Provider
 from .transaction import Transaction
 from .types import Command
@@ -53,3 +54,6 @@ def parse(data: Any) -> types.Envelope[Any] | types.MessageHeader | None:
         types.EventType.parse(data)
         or types.CommandType.parse(data)
     )
+
+
+register(PingHandler)
