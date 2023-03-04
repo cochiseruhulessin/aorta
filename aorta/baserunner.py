@@ -22,7 +22,7 @@ from .types import ITransaction
 
 class BaseRunner:
     __module__: str = 'aorta'
-    logger: logging.Logger = logging.getLogger('uvicorn')
+    logger: logging.Logger = logging.getLogger('aorta')
     provider: type[Provider] | Provider
     publisher: IPublisher
 
@@ -38,8 +38,9 @@ class BaseRunner:
             assert len(handlers) == 1
             handler_class = handlers.pop()
             self.logger.debug(
-                "Running handler %s for bound envelope (id: %s)",
-                handler_class.__name__, envelope.metadata.uid
+                "Running handler %s for bound envelope (id: %s, kind; %s, version: %s)",
+                handler_class.__name__, envelope.metadata.uid, envelope.kind,
+                envelope.api_version
             )
             _, success, _ = await self.run_envelope(handler_class, envelope) # type: ignore
 
@@ -58,8 +59,9 @@ class BaseRunner:
                 metadata=envelope.metadata
             )
             self.logger.debug(
-                "Running handler %s for unbound envelope (id: %s)",
-                handler_class.__name__, envelope.metadata.uid
+                "Running handler %s for unbound envelope (id: %s, kind; %s, version: %s)",
+                handler_class.__name__, envelope.metadata.uid, envelope.kind,
+                envelope.api_version
             )
             futures.append(self.run_handler(tx, handler, envelope)) # type: ignore
     
@@ -114,7 +116,7 @@ class BaseRunner:
         except Exception as e:
             result = NotImplemented
             success = False
-            self.logger.debug(
+            self.logger.exception(
                 "Caught fatal %s during %s.handle()",
                 type(e).__name__, type(handler).__name__
             )
