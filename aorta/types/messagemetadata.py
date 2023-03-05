@@ -43,6 +43,8 @@ class MessageMetadata(pydantic.BaseModel):
 
     handler: str | None = None
 
+    audience: list[str] = []
+
     annotations: dict[str, Any] = pydantic.Field(default={})
     labels: dict[str, Any] = pydantic.Field(default={})
 
