@@ -16,6 +16,13 @@ from .messageheader import MessageHeader
 from .messagetype import MessageType
 
 
+class UnknownCommandEnvelope(CommandEnvelope[Any]):
+    spec: dict[str, Any]
+
+    def is_known(self) -> bool:
+        return False
+
+
 class CommandType(MessageType):
     __module__: str = 'aorta.types'
     __registry__: dict[tuple[str, str], type[CommandEnvelope[Any]]] = {}
@@ -30,5 +37,7 @@ class CommandType(MessageType):
             header = MessageHeader.parse_obj(data)
             if header.type == CommandType.typename:
                 return CommandType.__registry__[(header.api_version, header.kind)].parse_obj(data)
-        except (pydantic.ValidationError, KeyError, TypeError, ValueError):
+        except KeyError:
+            return UnknownCommandEnvelope.parse_obj(data)
+        except (pydantic.ValidationError, TypeError, ValueError):
             return header

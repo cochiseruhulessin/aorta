@@ -27,13 +27,7 @@ class BaseRunner:
     publisher: IPublisher
 
     async def run(self, envelope: Envelope[Any]) -> bool:
-        if not envelope.is_known():
-            self.logger.critical(
-                "Got unexpected Aorta message: %s/%s (id: %s)",
-                envelope.api_version, envelope.kind, envelope.metadata.uid
-            )
-            return True
-        if envelope.is_bound():
+        if envelope.is_bound() and envelope.is_known():
             handlers = self.get_handlers(envelope, False)
             assert len(handlers) == 1, len(handlers)
             handler_class = handlers.pop()

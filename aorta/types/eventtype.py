@@ -16,6 +16,13 @@ from .messageheader import MessageHeader
 from .messagetype import MessageType
 
 
+class UnknownEventEnvelope(EventEnvelope[Any]):
+    data: dict[str, Any]
+
+    def is_known(self) -> bool:
+        return False
+
+
 class EventType(MessageType):
     __module__: str = 'aorta.types'
     __registry__: dict[tuple[str, str], type[EventEnvelope[Any]]] = {}
@@ -30,5 +37,7 @@ class EventType(MessageType):
             header = MessageHeader.parse_obj(data)
             if header.type == EventType.typename:
                 return EventType.__registry__[(header.api_version, header.kind)].parse_obj(data)
-        except (pydantic.ValidationError, KeyError, TypeError, ValueError):
+        except KeyError:
+            return UnknownEventEnvelope.parse_obj(data)
+        except (pydantic.ValidationError, TypeError, ValueError):
             return header

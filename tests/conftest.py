@@ -52,6 +52,11 @@ def EventListener() -> type[aorta.MessageHandler]:
     return FooListener
 
 
+@pytest.fixture # type: ignore
+def Sewer() -> type[aorta.MessageHandler]:
+    return FallbackHandler
+
+
 @pytest.fixture
 def command() -> aorta.Command:
     return FooCommand(foo=1)
@@ -72,6 +77,10 @@ class FooHandler(aorta.CommandHandler):
         return 'foo'
 
 
+class FallbackHandler(aorta.Sewer):
+    pass
+
+
 class FooEvent(aorta.Event):
     foo: int
 
@@ -84,3 +93,4 @@ class FooListener(aorta.EventListener):
 
 aorta.register(FooHandler)
 aorta.register(FooListener)
+aorta.register(FallbackHandler)

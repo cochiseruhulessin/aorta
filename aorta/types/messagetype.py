@@ -29,6 +29,7 @@ class MessageType(pydantic.main.ModelMetaclass):
         **params: Any
     ) -> 'MessageType':
         is_abstract = namespace.pop('__abstract__', False)
+        skip_register: bool = namespace.pop('__aorta_disable__', False)
         new_class =  super().__new__(cls, name, bases, namespace, **params) # type: ignore
         namespace.setdefault('__version__', 'v1')
         if not is_abstract:
@@ -44,6 +45,7 @@ class MessageType(pydantic.main.ModelMetaclass):
                     }
                 }
             )
-            cls.__registry__[k] = new_class.__envelope__ # type: ignore
+            if not skip_register:
+                cls.__registry__[k] = new_class.__envelope__ # type: ignore
         
         return new_class # type: ignore

@@ -6,7 +6,6 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-from typing import Any
 from unittest.mock import AsyncMock
 
 import pytest
@@ -23,14 +22,6 @@ __all__: list[str] = [
     'test_publish_event',
     'test_get_handlers',
 ]
-
-
-class Sewer(aorta.Sewer):
-
-    async def handle(self, message: aorta.types.Envelope[Any]) -> None:
-        pass
-
-aorta.register(Sewer)
 
 
 @pytest.mark.asyncio

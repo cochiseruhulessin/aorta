@@ -133,9 +133,14 @@ def test_parse_valid_unknown(
     parse: Callable[[Any], aorta.types.Envelope[Any] | None]
 ):
     cls = type(type(message))
-    e2 = parse({'apiVersion': 'v1', 'kind': 'Unknown', 'type': cls.typename})
+    e2 = parse({
+        **message.envelope().dict(),
+        'apiVersion': 'v1',
+        'kind': 'Unknown',
+        'type': cls.typename
+    })
     assert e2 is not None
-    assert type(e2) == aorta.types.MessageHeader
+    assert not e2.is_known()
     assert e2.kind == 'Unknown', e2.kind
     assert e2.api_version == 'v1', e2.api_version
 
@@ -159,8 +164,13 @@ def test_global_parse_valid_unknown(
     message: aorta.types.Publishable,
 ):
     cls = type(type(message))
-    e2 = aorta.parse({'apiVersion': 'v1', 'kind': 'Unknown', 'type': cls.typename})
+    e2 = aorta.parse({
+        **message.envelope().dict(),
+        'apiVersion': 'v1',
+        'kind': 'Unknown',
+        'type': cls.typename
+    })
     assert e2 is not None
-    assert type(e2) == aorta.types.MessageHeader
+    assert not e2.is_known()
     assert e2.kind == 'Unknown', e2.kind
     assert e2.api_version == 'v1', e2.api_version
