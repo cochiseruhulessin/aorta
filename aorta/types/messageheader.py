@@ -59,6 +59,12 @@ class MessageHeader(pydantic.BaseModel):
         """Return a boolean if the enclosed message is known."""
         return False
 
+    def is_private_event(self) -> bool:
+        """Return a boolean indicating if the enclosed message is a
+        private event.
+        """
+        return False
+
     def is_valid(self, now: int | None = None) -> bool:
         """Return a boolean indicating if the message is still valid."""
         return not self.is_expired()
