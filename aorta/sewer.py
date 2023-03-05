@@ -20,3 +20,14 @@ class Sewer(MessageHandler):
 
     async def handle(self, message: Envelope[Any]) -> None:
         raise NotImplementedError
+
+    async def run(self, envelope: Envelope[Any]) -> tuple[bool, Any]:
+        result: Any = NotImplemented
+        success = False
+        try:
+            result = await self.handle(envelope)
+            success = True
+        except Exception as e: # pragma: no cover
+            await self.on_exception(e)
+            raise
+        return success, result
