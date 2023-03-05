@@ -18,6 +18,7 @@ from .nulltransport import NullTransport
 from .ping import PingHandler
 from .provider import Provider
 from .transaction import Transaction
+from .sewer import Sewer
 from .types import Command
 from .types import Event
 from . import types
@@ -38,6 +39,7 @@ __all__: list[str] = [
     'MessagePublisher',
     'NullTransport',
     'Provider',
+    'Sewer',
     'Transaction',
 ]
 

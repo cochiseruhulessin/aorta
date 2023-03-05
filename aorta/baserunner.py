@@ -34,8 +34,8 @@ class BaseRunner:
             )
             return True
         if envelope.is_bound():
-            handlers = self.get_handlers(envelope)
-            assert len(handlers) == 1
+            handlers = self.get_handlers(envelope, False)
+            assert len(handlers) == 1, len(handlers)
             handler_class = handlers.pop()
             self.logger.debug(
                 "Running handler %s for bound envelope (id: %s, kind; %s, version: %s)",
@@ -87,8 +87,8 @@ class BaseRunner:
         await self.publisher.send(retry, is_retry=True)
         return True
 
-    def get_handlers(self, envelope: Envelope[Any]) -> set[type[MessageHandler]]:
-        return self.provider.get(envelope)
+    def get_handlers(self, envelope: Envelope[Any], sewers: bool = True) -> set[type[MessageHandler]]:
+        return self.provider.get(envelope, sewers)
     
     def must_run(self, envelope: Envelope[Any], handler_class: Any):
         return envelope.metadata.handler is None or envelope.wants(handler_class)
