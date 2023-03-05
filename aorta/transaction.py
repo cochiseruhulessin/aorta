@@ -31,10 +31,12 @@ class Transaction:
     def publish(
         self,
         message: Publishable,
-        correlation_id: str | None = None
+        correlation_id: str | None = None,
+        audience: set[str] | None = None
     ):
         envelope = message.envelope(
-            correlation_id=correlation_id or self.correlation_id
+            correlation_id=correlation_id or self.correlation_id,
+            audience=audience
         )
         self.messages.append(envelope)
 

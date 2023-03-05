@@ -15,5 +15,9 @@ from .envelope import Envelope
 class Publishable(Protocol): # pragma: no cover
     __module__: str = 'aorta.types'
 
-    def envelope(self, correlation_id: str | None = None) -> Envelope[Any]:
+    def envelope(
+        self,
+        correlation_id: str | None = None,
+        audience: set[str] | None = None
+    ) -> Envelope[Any]:
         ...

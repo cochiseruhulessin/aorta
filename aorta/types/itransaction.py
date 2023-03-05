@@ -26,7 +26,12 @@ class ITransaction(Protocol):
     def pending(self) -> list[Publishable]:
         ...
 
-    def publish(self, message: Publishable, correlation_id: str | None = None):
+    def publish(
+        self,
+        message: Publishable,
+        correlation_id: str | None = None,
+        audience: set[str] | None = None
+    ):
         ...
 
     async def __aenter__(self: T) -> T: ...

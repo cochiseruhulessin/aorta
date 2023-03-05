@@ -18,6 +18,8 @@ __all__: list[str] = [
     'test_accept',
     'test_envelope',
     'test_envelope_with_correlation_id',
+    'test_envelope_with_audience',
+    'test_envelope_with_audiences',
     'test_qualname',
     'test_typecheck',
     'test_is_valid',
@@ -49,6 +51,16 @@ def test_envelope_with_correlation_id(message: aorta.types.Publishable):
     e1 = message.envelope()
     e2 = message.envelope(correlation_id=e1.metadata.correlation_id)
     assert e2.metadata.correlation_id == e1.metadata.correlation_id
+
+
+def test_envelope_with_audience(message: aorta.types.Publishable):
+    e1 = message.envelope(audience={'foo'})
+    assert e1.metadata.audience == {'foo'}, e1.metadata.audience
+
+
+def test_envelope_with_audiences(message: aorta.types.Publishable):
+    e1 = message.envelope(audience={'foo', 'bar'})
+    assert e1.metadata.audience == {'foo', 'bar'}, e1.metadata.audience
 
 
 def test_is_valid(message: aorta.types.Publishable):

@@ -21,12 +21,17 @@ T = TypeVar('T', bound='Command')
 class Command(pydantic.BaseModel, metaclass=CommandType):
     __envelope__: type[Envelope[Any]]
 
-    def envelope(self: T, correlation_id: str | None = None) -> Envelope[T]:
+    def envelope(
+        self,
+        correlation_id: str | None = None,
+        audience: set[str] | None = None
+    ) -> Envelope[Any]:
         return self.__envelope__.parse_obj({
             'apiVersion': getattr(self, '__version__', 'v1'),
             'kind': type(self).__name__,
             'type': 'unimatrixone.io/command',
             'metadata': {
+                'audience': audience or set(),
                 'correlationId': correlation_id
             },
             'spec': self.dict()

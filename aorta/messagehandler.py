@@ -35,20 +35,28 @@ class MessageHandler:
         assert metadata.correlation_id == self.metadata.correlation_id
         assert metadata == self.metadata
 
-    def issue(self, command: Command):
+    def issue(self, command: Command, audience: set[str] | None = None):
         """Issue a command using the default command issuer."""
         assert self.metadata.correlation_id is not None
-        self.publisher.publish(command, correlation_id=self.metadata.correlation_id)
+        self.publisher.publish(
+            command,
+            correlation_id=self.metadata.correlation_id,
+            audience=audience
+        )
 
     async def on_exception(self, exception: Exception) -> None:
         """Hook to perform cleanup after a fatal exception.
         """
         pass
 
-    def publish(self, event: Event):
+    def publish(self, event: Event, audience: set[str] | None = None):
         """Publish an event using the default event publisher."""
         assert self.metadata.correlation_id is not None
-        self.publisher.publish(event, correlation_id=self.metadata.correlation_id)
+        self.publisher.publish(
+            event,
+            correlation_id=self.metadata.correlation_id,
+            audience=audience
+        )
 
     async def run(self, envelope: Envelope[Any]) -> tuple[bool, Any]:
         result: Any = NotImplemented
