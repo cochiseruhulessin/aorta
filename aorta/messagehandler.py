@@ -58,5 +58,5 @@ class MessageHandler:
             success = True
         except Exception as e: # pragma: no cover
             await self.on_exception(e)
-            self.logger.exception('Caught fatal %s', type(e).__name__)
+            raise
         return success, result
